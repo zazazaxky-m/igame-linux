@@ -1,0 +1,25 @@
+[Unit]
+Description=iGame Control service (lighting, overclocking and fans for Colorful iGame GeForce)
+Documentation=file://@CMAKE_INSTALL_FULL_DOCDIR@/README.md https://github.com/zazazaxky-m/igame-linux
+After=systemd-modules-load.service nvidia-persistenced.service
+Wants=systemd-modules-load.service
+
+[Service]
+Type=simple
+# The lighting controller is reached through i2c-dev; load it now rather than waiting for a reboot.
+ExecStartPre=-modprobe -q i2c-dev
+ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/igamed
+Restart=on-failure
+RestartSec=3
+RuntimeDirectory=igame-linux
+RuntimeDirectoryMode=0755
+StateDirectory=igame-linux
+ConfigurationDirectory=igame-linux
+ProtectHome=yes
+ProtectSystem=full
+ReadWritePaths=/etc/igame-linux
+PrivateTmp=yes
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=multi-user.target

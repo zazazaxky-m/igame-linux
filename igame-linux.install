@@ -1,0 +1,12 @@
+post_install() {
+    echo ">> Enable the service:  sudo systemctl enable --now igamed"
+    echo ">> Then open 'iGame Control' from the application menu (your user must be in the wheel or sudo group)."
+}
+
+post_upgrade() {
+    echo ">> Restart the service:  sudo systemctl restart igamed"
+}
+
+pre_remove() {
+    systemctl disable --now igamed.service >/dev/null 2>&1 || true
+}

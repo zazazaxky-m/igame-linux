@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- SPDX-License-Identifier: CC0-1.0 -->
+<component type="desktop-application">
+  <id>io.github.zazazaxky_m.IGameControl</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+
+  <name>iGame Control</name>
+  <summary>Lighting, overclocking and fans for Colorful iGame GeForce cards</summary>
+  <summary xml:lang="id">Lampu, overclock dan kipas untuk kartu Colorful iGame GeForce</summary>
+
+  <developer id="io.github.zazazaxky_m">
+    <name>zazazaxky-m</name>
+  </developer>
+
+  <description>
+    <p>
+      An unofficial Linux replacement for Colorful's iGame Center. It controls the RGB lighting of
+      Colorful iGame GeForce graphics cards and the power limit, clock offsets, clock lock and fans
+      of NVIDIA cards, with live monitoring.
+    </p>
+    <ul>
+      <li>32 lighting effects, including music effects modelled on LedFx and a Smart Sound mode that picks an effect for the style of music playing</li>
+      <li>Accepts LedFx streams over DDP, so LedFx can drive the card</li>
+      <li>Power limit, core and memory clock offsets, clock lock and an optional crash-safe apply at boot</li>
+      <li>Per-fan automatic, fixed or curve modes with fail-safe hand-back to the driver</li>
+      <li>Profiles, a tray icon and a command line tool</li>
+    </ul>
+    <p>
+      Not affiliated with or endorsed by Colorful or NVIDIA. Colorful, iGame and iGame Center are
+      trademarks of Colorful Technology; NVIDIA and GeForce are trademarks of NVIDIA Corporation.
+    </p>
+  </description>
+
+  <launchable type="desktop-id">igame-control.desktop</launchable>
+
+  <url type="homepage">https://github.com/zazazaxky-m/igame-linux</url>
+  <url type="bugtracker">https://github.com/zazazaxky-m/igame-linux/issues</url>
+  <url type="vcs-browser">https://github.com/zazazaxky-m/igame-linux</url>
+  <url type="contribute">https://github.com/zazazaxky-m/igame-linux/blob/main/CONTRIBUTING.md</url>
+
+  <screenshots>
+    <screenshot type="default">
+      <caption>Overview with live sensors</caption>
+      <image>https://raw.githubusercontent.com/zazazaxky-m/igame-linux/main/docs/screenshots/overview.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>RGB lighting and music effects</caption>
+      <image>https://raw.githubusercontent.com/zazazaxky-m/igame-linux/main/docs/screenshots/lighting.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Power limit and overclocking</caption>
+      <image>https://raw.githubusercontent.com/zazazaxky-m/igame-linux/main/docs/screenshots/performance.png</image>
+    </screenshot>
+    <screenshot>
+      <caption>Device details, LedFx and app settings</caption>
+      <image>https://raw.githubusercontent.com/zazazaxky-m/igame-linux/main/docs/screenshots/settings.png</image>
+    </screenshot>
+  </screenshots>
+
+  <categories>
+    <category>Settings</category>
+    <category>HardwareSettings</category>
+  </categories>
+  <keywords>
+    <keyword>GPU</keyword>
+    <keyword>RGB</keyword>
+    <keyword>overclock</keyword>
+    <keyword>fan</keyword>
+    <keyword>NVIDIA</keyword>
+    <keyword>Colorful</keyword>
+    <keyword>LedFx</keyword>
+  </keywords>
+
+  <provides>
+    <binary>igame-control</binary>
+    <binary>igame-ctl</binary>
+    <binary>igamed</binary>
+  </provides>
+  <supports>
+    <control>pointing</control>
+    <control>keyboard</control>
+  </supports>
+
+  <content_rating type="oars-1.1"/>
+
+  <releases>
+    <release version="1.0.0" date="2026-10-21">
+      <description>
+        <p>First public release.</p>
+      </description>
+    </release>
+  </releases>
+</component>

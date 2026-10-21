@@ -1,0 +1,26 @@
+# Build output
+/build/
+/build-*/
+Makefile
+Makefile.*
+*.o
+moc_*
+qrc_*
+*.qm
+.qmake.stash
+
+# makepkg
+/pkg/
+/src/
+*.pkg.tar.*
+*.log
+
+# Editors
+*.user
+.vscode/
+.idea/
+
+# AUR package test builds
+/packaging/aur/*/src/
+/packaging/aur/*/pkg/
+/packaging/aur/*/igame-linux/

@@ -1,0 +1,37 @@
+<RCC>
+  <qresource prefix="/">
+    <file>qml/Main.qml</file>
+    <file>qml/components/qmldir</file>
+    <file>qml/components/ActionBar.qml</file>
+    <file>qml/components/AppButton.qml</file>
+    <file>qml/components/AppSlider.qml</file>
+    <file>qml/components/AppSwitch.qml</file>
+    <file>qml/components/AppTextField.qml</file>
+    <file>qml/components/Card.qml</file>
+    <file>qml/components/Chip.qml</file>
+    <file>qml/components/ColorPicker.qml</file>
+    <file>qml/components/ConfirmDialog.qml</file>
+    <file>qml/components/FanCurveEditor.qml</file>
+    <file>qml/components/FanSpinner.qml</file>
+    <file>qml/components/Gauge.qml</file>
+    <file>qml/components/GpuArt.qml</file>
+    <file>qml/components/Icon.qml</file>
+    <file>qml/components/KeyValue.qml</file>
+    <file>qml/components/LineChart.qml</file>
+    <file>qml/components/NavButton.qml</file>
+    <file>qml/components/PaletteEditor.qml</file>
+    <file>qml/components/ScrollPage.qml</file>
+    <file>qml/components/Segmented.qml</file>
+    <file>qml/components/SliderField.qml</file>
+    <file>qml/components/StatBlock.qml</file>
+    <file>qml/components/Theme.qml</file>
+    <file>qml/components/Toast.qml</file>
+    <file>qml/pages/DashboardPage.qml</file>
+    <file>qml/pages/FansPage.qml</file>
+    <file>qml/pages/InfoPage.qml</file>
+    <file>qml/pages/PerformancePage.qml</file>
+    <file>qml/pages/ProfilesPage.qml</file>
+    <file>qml/pages/RgbPage.qml</file>
+    <file>icons/app.svg</file>
+  </qresource>
+</RCC>

@@ -1,0 +1,23 @@
+pkgbase = igame-linux-git
+	pkgdesc = Unofficial lighting, overclocking and fan control for Colorful iGame GeForce cards (iGame Center replacement)
+	pkgver = 1.0.0.r0.g0000000
+	pkgrel = 1
+	url = https://github.com/zazazaxky-m/igame-linux
+	install = igame-linux.install
+	arch = x86_64
+	license = GPL-3.0-or-later
+	makedepends = git
+	makedepends = cmake
+	makedepends = qt6-tools
+	depends = qt6-base
+	depends = qt6-declarative
+	depends = qt6-svg
+	depends = nvidia-utils
+	depends = libpulse
+	depends = hicolor-icon-theme
+	provides = igame-linux
+	conflicts = igame-linux
+	source = igame-linux::git+https://github.com/zazazaxky-m/igame-linux.git
+	sha256sums = SKIP
+
+pkgname = igame-linux-git

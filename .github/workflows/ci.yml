@@ -1,0 +1,41 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build and test (Arch Linux)
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+      - name: Install dependencies
+        run: pacman -Syu --noconfirm --needed git cmake ninja qt6-base qt6-declarative qt6-svg qt6-tools appstream desktop-file-utils shellcheck
+
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_COMPILE_WARNING_AS_ERROR=ON
+
+      - name: Build
+        run: cmake --build build
+
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Install into a staging directory
+        run: |
+          DESTDIR="$PWD/stage" cmake --install build
+          find stage -type f | sort
+
+      - name: Validate desktop entry and AppStream metadata
+        run: |
+          desktop-file-validate dist/igame-control.desktop
+          appstreamcli validate --no-net dist/*.metainfo.xml
+
+      - name: Check install.sh
+        run: shellcheck install.sh

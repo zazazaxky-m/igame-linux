@@ -1,0 +1,37 @@
+name: Bug report
+description: Something does not work as it should
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Output of `igame-ctl --version`
+      placeholder: igame-ctl 1.0.0
+    validations:
+      required: true
+  - type: input
+    id: system
+    attributes:
+      label: Distribution, desktop and NVIDIA driver version
+      placeholder: Arch Linux, KDE Plasma 6.4 (Wayland), NVIDIA 615.78
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: Output of `igame-ctl status`
+      render: text
+  - type: textarea
+    id: log
+    attributes:
+      label: Service log
+      description: Output of `journalctl -u igamed -b --no-pager | tail -50`
+      render: text

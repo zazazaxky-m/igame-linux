@@ -1,0 +1,24 @@
+singleton Theme 1.0 Theme.qml
+ActionBar 1.0 ActionBar.qml
+AppButton 1.0 AppButton.qml
+AppSlider 1.0 AppSlider.qml
+AppSwitch 1.0 AppSwitch.qml
+AppTextField 1.0 AppTextField.qml
+Card 1.0 Card.qml
+Chip 1.0 Chip.qml
+ColorPicker 1.0 ColorPicker.qml
+ConfirmDialog 1.0 ConfirmDialog.qml
+FanCurveEditor 1.0 FanCurveEditor.qml
+FanSpinner 1.0 FanSpinner.qml
+Gauge 1.0 Gauge.qml
+GpuArt 1.0 GpuArt.qml
+Icon 1.0 Icon.qml
+KeyValue 1.0 KeyValue.qml
+LineChart 1.0 LineChart.qml
+NavButton 1.0 NavButton.qml
+PaletteEditor 1.0 PaletteEditor.qml
+ScrollPage 1.0 ScrollPage.qml
+Segmented 1.0 Segmented.qml
+SliderField 1.0 SliderField.qml
+StatBlock 1.0 StatBlock.qml
+Toast 1.0 Toast.qml

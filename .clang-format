@@ -1,0 +1,39 @@
+# Matches the existing code. Format the lines you change (git clang-format), not whole files.
+BasedOnStyle: WebKit
+Standard: c++20
+ColumnLimit: 120
+IndentWidth: 4
+PointerAlignment: Right
+BreakBeforeBraces: Custom
+BraceWrapping:
+  AfterClass: true
+  AfterFunction: true
+  AfterStruct: false
+  AfterEnum: false
+  AfterNamespace: false
+  AfterControlStatement: Never
+  BeforeElse: false
+  BeforeLambdaBody: false
+  SplitEmptyFunction: false
+BreakConstructorInitializers: BeforeComma
+NamespaceIndentation: None
+FixNamespaceComments: true
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLambdasOnASingleLine: All
+AllowShortBlocksOnASingleLine: Never
+AlignAfterOpenBracket: Align
+AlignOperands: DontAlign
+AlignTrailingComments: true
+AllowShortCaseLabelsOnASingleLine: true
+AlwaysBreakTemplateDeclarations: Yes
+SpaceAfterTemplateKeyword: false
+BinPackArguments: true
+BinPackParameters: true
+BreakBeforeBinaryOperators: NonAssignment
+Cpp11BracedListStyle: true
+SpaceBeforeCpp11BracedList: false
+IncludeBlocks: Preserve
+SortIncludes: CaseInsensitive
+InsertBraces: false
+QualifierAlignment: Leave

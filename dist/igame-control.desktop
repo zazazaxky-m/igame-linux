@@ -1,0 +1,14 @@
+[Desktop Entry]
+Type=Application
+Name=iGame Control
+GenericName=Graphics card control
+GenericName[id]=Kontrol kartu grafis
+Comment=Lighting, overclocking and fans for Colorful iGame GeForce cards (unofficial)
+Comment[id]=Lampu, overclock dan kipas untuk kartu Colorful iGame GeForce (tidak resmi)
+Exec=igame-control
+Icon=igame-control
+Terminal=false
+Categories=Settings;HardwareSettings;Qt;
+Keywords=gpu;rgb;fan;overclock;nvidia;colorful;igame;ledfx;
+Keywords[id]=gpu;rgb;kipas;overclock;nvidia;colorful;igame;ledfx;
+StartupWMClass=igame-control

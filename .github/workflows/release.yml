@@ -1,0 +1,38 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+# Pushing a tag like v1.0.0 builds the Arch Linux package and publishes a GitHub release with it.
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel
+    steps:
+      - name: Install dependencies
+        run: pacman -Syu --noconfirm --needed git cmake qt6-base qt6-declarative qt6-svg qt6-tools libpulse hicolor-icon-theme
+
+      - uses: actions/checkout@v4
+
+      - name: Build the package
+        # makepkg refuses to run as root; nvidia-utils is a runtime dependency only (-d).
+        run: |
+          useradd -m builder
+          chown -R builder .
+          su builder -c "makepkg -fd --noconfirm"
+
+      - name: Release notes from CHANGELOG.md
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          awk -v v="$version" '/^## \[/{p = index($0, "[" v "]") > 0; next} /^\[[^]]+\]: /{p = 0} p' CHANGELOG.md > notes.md
+          cat notes.md
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          body_path: notes.md
+          files: "*.pkg.tar.zst"
