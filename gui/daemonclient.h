@@ -9,13 +9,13 @@
 #include <QTimer>
 #include <QVariantMap>
 
-// Connection to igamed. Exposes the daemon state to QML and turns calls into requests.
+// igamed connection + state for QML
 class DaemonClient : public QObject
 {
     Q_OBJECT
     Q_PROPERTY(bool connected READ isConnected NOTIFY connectedChanged)
     Q_PROPERTY(QString socketPath READ socketPath CONSTANT)
-    // The service runs but refuses this user (not in the socket's group).
+    // socket exists but we're not in its group
     Q_PROPERTY(bool accessDenied READ accessDenied NOTIFY accessDeniedChanged)
     Q_PROPERTY(QString socketGroup READ socketGroup NOTIFY accessDeniedChanged)
     Q_PROPERTY(QVariantMap info READ info NOTIFY infoChanged)
@@ -54,7 +54,6 @@ public:
     Q_INVOKABLE void deleteProfile(const QString &name);
     Q_INVOKABLE void rescanRgb();
     Q_INVOKABLE void reconnect();
-    // Turns a daemon error ("code|arg|arg") into a message in the current UI language.
     Q_INVOKABLE QString translateError(const QString &coded) const;
 
 signals:

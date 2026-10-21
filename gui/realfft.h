@@ -5,9 +5,8 @@
 #include <complex>
 #include <vector>
 
-// Magnitude spectrum of a block of real samples. The 2N real samples are packed into an N-point
-// complex FFT (even samples as real parts, odd as imaginary) and unpacked afterwards, which
-// halves the work; twiddle factors and the bit-reversal order are computed once.
+// Magnitude spectrum of real input. Packs 2N reals into an N-point complex FFT (the usual trick),
+// about half the work of a full complex FFT.
 class RealFft
 {
 public:
@@ -36,7 +35,7 @@ public:
 
     int size() const { return 2 * m_half; }
 
-    // in: size() samples (already windowed or not), out: size()/2 + 1 magnitudes.
+    // out needs size()/2 + 1 floats
     void magnitudes(const float *in, float *out)
     {
         for (int n = 0; n < m_half; ++n)
@@ -57,7 +56,7 @@ public:
             const std::complex<float> zc = std::conj(m_buf[size_t((m_half - k) % m_half)]);
             const std::complex<float> even = 0.5f * (z + zc);
             const std::complex<float> odd = std::complex<float>(0, -0.5f) * (z - zc);
-            out[k] = std::sqrt(std::norm(even + m_unpack[size_t(k)] * odd)); // cheaper than std::abs (hypot)
+            out[k] = std::sqrt(std::norm(even + m_unpack[size_t(k)] * odd)); // std::abs uses hypot, slow
         }
     }
 

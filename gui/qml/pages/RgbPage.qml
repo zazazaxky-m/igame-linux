@@ -5,13 +5,13 @@ import QtQuick.Layouts
 import IGame
 import "../components"
 
-// Two columns: the preview and settings on the left stay put; only the effect grid scrolls.
+// left column stays put, only the effect grid scrolls
 Item {
     id: page
-    property var settings          // QtCore Settings from Main (remembers palettes per effect)
+    property var settings // remembers palettes per effect
     property string category: "all"
 
-    // Hidden pages stop following the LED and the analyser (no redraws for invisible items).
+    // don't follow the LED/analyser while hidden, saves redraws
     readonly property color led: visible ? Daemon.ledColor : _frozenLed
     property color _frozenLed: "#000000"
     onVisibleChanged: if (!visible) _frozenLed = Daemon.ledColor
@@ -173,8 +173,7 @@ Item {
             Layout.fillHeight: true
             spacing: 18
 
-            // Left column: stays in place. The card picture shrinks first so everything fits;
-            // it only scrolls on its own if the window is very short.
+            // left: the card picture shrinks first, scrolling is the last resort
             Flickable {
                 id: leftFlick
                 Layout.preferredWidth: 4
@@ -196,8 +195,7 @@ Item {
                     }
                 }
 
-                // Space left for the card picture once everything else is laid out (100..210 px).
-                // Rounded down with a little slack so fractional text heights never tip it into scrolling.
+                // space left for the picture (100..210), minus a bit of slack for rounding
                 readonly property real artHeight: Math.max(100, Math.min(210, Math.floor(
                     height - 4 - settingsCard.implicitHeight - leftCol.spacing
                     - (ledfxBanner.visible ? ledfxBanner.implicitHeight + leftCol.spacing : 0)
@@ -209,7 +207,6 @@ Item {
                     width: leftFlick.width - (leftFlick.contentHeight > leftFlick.height ? 12 : 0)
                     spacing: 18
 
-                    // LedFx is streaming to the card: say so, and that the chosen effect comes back.
                     Rectangle {
                         id: ledfxBanner
                         visible: !!Daemon.ledfx.active
@@ -316,7 +313,7 @@ Item {
                             }
                         }
 
-                        // Live analysis for audio effects: beat, tempo, detected style and band levels.
+                        // audio analysis
                         ColumnLayout {
                             id: audioBox
                             visible: !!page.meta.audio && !Daemon.ledfx.active
@@ -505,7 +502,7 @@ Item {
                 }
             }
 
-            // Right column: only the effect grid scrolls.
+            // right: effect grid
             Card {
                 Layout.preferredWidth: 5
                 Layout.fillWidth: true

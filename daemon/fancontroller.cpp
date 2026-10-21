@@ -183,7 +183,7 @@ void FanController::applyPercent(int fan, State &st, int pct, qint64 now)
     if (now < st.retryAt)
         return;
     if (verify && st.applied == pct) {
-        // The driver can take control back (e.g. after suspend); re-assert periodically.
+        // driver may take over again after suspend, re-apply now and then
         st.verifyIn = 15;
         const auto target = m_nvml.fanTarget(uint(fan));
         const auto policy = m_nvml.fanPolicy(uint(fan));
@@ -213,7 +213,7 @@ void FanController::tick(std::optional<uint> temperature)
             continue;
         }
         if (s.mode != QLatin1String("curve") || !temperature) {
-            applyAuto(fan, st, now); // auto mode, or fail-safe when the sensor is unreadable
+            applyAuto(fan, st, now); // also the fail-safe
             continue;
         }
 

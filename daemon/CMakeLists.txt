@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# Everything but main() is a library, so the tests can use it.
+# static lib so the tests can link it
 add_library(igamed_core STATIC
     daemon.cpp daemon.h
     ddpreceiver.cpp ddpreceiver.h

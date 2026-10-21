@@ -12,9 +12,9 @@ class Nvml;
 
 struct FanSetting {
     QString mode = QStringLiteral("auto"); // auto | fixed | curve
-    int fixed = 50;                        // percent, fixed mode
-    QVector<QPointF> curve;                // (°C, %) sorted by temperature
-    bool zeroRpm = true;                   // curve mode: hand back to the driver (0 RPM) when cool
+    int fixed = 50;                        // %
+    QVector<QPointF> curve;                // (°C, %), sorted
+    bool zeroRpm = true;                   // below zeroRpmTemp let the driver stop the fans
     int zeroRpmTemp = 45;
 };
 
@@ -29,8 +29,7 @@ struct FanConfig {
     const FanSetting &settingFor(int fan) const;
 };
 
-// Applies fan settings once per second. Curve mode ramps up immediately and down by at most
-// 2 %/s; if the temperature cannot be read the fans go back to driver control.
+// Called once a second. Curves ramp up right away but down max 2%/s. No temp reading -> back to driver auto.
 class FanController
 {
 public:
@@ -40,9 +39,8 @@ public:
     void tick(std::optional<uint> temperature);
     void releaseAll();
     QString lastError() const { return m_error; }
-    // Per fan: -1 = driver (auto), otherwise the percent this controller requested.
+    // per fan: -1 = driver auto, otherwise %
     QVector<int> requested() const;
-    // Fan percent for a temperature on a (°C, %) curve sorted by temperature.
     static int interpolate(const QVector<QPointF> &curve, double temp);
 
 private:

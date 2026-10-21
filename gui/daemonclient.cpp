@@ -45,7 +45,7 @@ DaemonClient::DaemonClient(QObject *parent)
 
 DaemonClient::~DaemonClient()
 {
-    // m_socket outlives the other members; its disconnect on destruction must not reach our slots.
+    // avoid slots firing from the socket destructor
     m_socket.disconnect(this);
     m_socket.abort();
 }

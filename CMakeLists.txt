@@ -28,8 +28,7 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 endif()
 add_compile_definitions(IGAME_VERSION="${PROJECT_VERSION}")
 
-# Relative to the install prefix. systemd also reads units and modules-load.d from
-# /usr/local/lib, so the defaults work for both /usr and /usr/local installs.
+# relative to the prefix (systemd also looks in /usr/local/lib)
 set(IGAME_SYSTEMD_UNITDIR "lib/systemd/system" CACHE STRING "Directory for igamed.service")
 set(IGAME_MODULES_LOAD_DIR "lib/modules-load.d" CACHE STRING "Directory for the i2c-dev modules-load file")
 

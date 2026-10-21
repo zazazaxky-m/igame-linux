@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Fan curve interpolation and fan settings validation.
 
 #include "fancontroller.h"
 
@@ -67,7 +66,7 @@ private slots:
         QJsonObject slow = fan(QStringLiteral("fixed"));
         slow[QStringLiteral("fixed")] = 10;
         QTest::newRow("below minimum") << config(slow) << "fan_speed_range|30|100";
-        QJsonArray onePoint; // not {QJsonArray{40, 30}}: braces would copy the point itself
+        QJsonArray onePoint; // {QJsonArray{40, 30}} would be the point itself
         onePoint.append(QJsonArray{40, 30});
         QTest::newRow("one point") << config(fan(QStringLiteral("curve"), onePoint)) << "curve_points";
         QTest::newRow("unsorted") << config(fan(QStringLiteral("curve"), {QJsonArray{60, 50}, QJsonArray{40, 30}})) << "curve_order";

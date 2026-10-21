@@ -103,8 +103,7 @@ bool Daemon::start()
     }
     const QByteArray path = QFile::encodeName(m_opts.socketPath);
     if (geteuid() == 0) {
-        // Administrators are "wheel" on Arch and Fedora but "sudo" (or "admin") on Debian and
-        // Ubuntu; with the default, take whichever exists so no distro needs extra setup.
+        // debian/ubuntu have no wheel group
         QStringList candidates{m_opts.socketGroup};
         if (m_opts.socketGroup == QLatin1String("wheel"))
             candidates << QStringLiteral("sudo") << QStringLiteral("admin");
@@ -348,7 +347,7 @@ void Daemon::applyBootOc()
 
     const QString marker = m_opts.stateDir + QStringLiteral("/oc-pending");
     if (QFile::exists(marker)) {
-        // The previous start applied OC and never reached the 2-minute mark: likely unstable.
+        // last boot applied OC and died within 2 min, so skip it this time
         m_ocBootSkipped = true;
         QFile::remove(marker);
         options[QStringLiteral("apply_oc_on_boot")] = false;
@@ -377,7 +376,7 @@ void Daemon::pollTelemetry()
         m_ddpFps = m_ddp.framesPerSecond();
         broadcastLedfx();
     }
-    // The DDP port was busy (another program had it): try again every few seconds.
+    // port was busy, retry every 5s
     if (!m_ddp.listening() && !m_ddp.lastError().isEmpty() && ++m_ddpRetry % 5 == 0
         && m_config.value(kOptions).toObject().value(QStringLiteral("ledfx_enabled")).toBool(true)) {
         applyLedfxOptions();
@@ -597,7 +596,7 @@ void Daemon::applyLedfxOptions()
     if (m_ddp.listen(network))
         qInfo().noquote() << "LedFx: listening for DDP on" << (network ? "all interfaces" : "127.0.0.1") << "port"
                           << DdpReceiver::kPort;
-    else if (m_ddp.lastError() != m_ddpLoggedError) // retried every 5 s; say it once
+    else if (m_ddp.lastError() != m_ddpLoggedError) // don't spam the log on retries
         qWarning().noquote() << "LedFx:" << igame::errorText(m_ddp.lastError());
     m_ddpLoggedError = m_ddp.lastError();
 }

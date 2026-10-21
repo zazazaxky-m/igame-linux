@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Layouts
 import QtQuick.Effects
 
-// Floating "unsaved changes" bar that slides up from the bottom of a page.
+// "unsaved changes" bar
 Item {
     id: bar
     property bool shown: false

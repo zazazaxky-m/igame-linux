@@ -37,7 +37,7 @@ QtObject {
         return f < 0.5 ? mix(good, warn, f * 2) : mix(warn, bad, (f - 0.5) * 2)
     }
     function tempColor(t) { return heat((t - 45) / 40) }
-    // Keep LED-derived accents readable when the LED is dim or off.
+    // accent from the LED color that stays readable when it's dim or off
     function glow(c) {
         var m = Math.max(c.r, c.g, c.b)
         if (m < 0.08) return accent

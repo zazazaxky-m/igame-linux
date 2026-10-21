@@ -62,7 +62,6 @@ void AppHelper::applyLanguage()
         QCoreApplication::removeTranslator(&m_translator);
         m_translatorInstalled = false;
     }
-    // English is the source language; other languages come from embedded .qm files.
     if (effectiveLanguage() == QLatin1String("id")
         && m_translator.load(QStringLiteral(":/i18n/igame_id.qm"))) {
         QCoreApplication::installTranslator(&m_translator);

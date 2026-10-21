@@ -10,18 +10,17 @@
 #include <QTimer>
 #include <QVector>
 
-// Lighting settings as stored in the config and sent by clients.
 struct RgbSettings {
     QString effect = QStringLiteral("static");
     QVector<QColor> colors{QColor(255, 255, 255)};
     double speed = 1.0;      // 0.1 .. 5
     int brightness = 100;    // 0 .. 100
-    double low = 40;         // sensor modes: value mapped to the first color
-    double high = 80;        // sensor modes: value mapped to the last color
-    int sensitivity = 100;   // audio modes (10 .. 300 %), used by the GUI's audio analyser
+    double low = 40;         // sensor range
+    double high = 80;
+    int sensitivity = 100;   // %, audio effects only
 
     static const QStringList &effects();
-    // Audio modes are rendered by the GUI (user session audio) and streamed as frames.
+    // audio effects are rendered by the GUI and streamed to us
     static bool isAudio(const QString &effect) { return effect.startsWith(QLatin1String("music")); }
     static QString validate(const QJsonObject &o);
     static RgbSettings fromJson(const QJsonObject &o);
@@ -34,8 +33,7 @@ struct Sensors {
     double power = -1;         // % of the power limit
 };
 
-// Computes one color per frame (single-zone card) and emits it when it changes.
-// Like iGame Center's EasyCalc, animation happens on the host and is streamed as frames.
+// Renders the current effect into one color per frame (same idea as iGame Center's EasyCalc).
 class EffectEngine : public QObject
 {
     Q_OBJECT
@@ -46,8 +44,7 @@ public:
     const RgbSettings &settings() const { return m_settings; }
     void setSensors(const Sensors &sensors) { m_sensors = sensors; }
     void externalFrame(const QColor &color);
-    // An outside controller (LedFx over DDP) takes over the light while its frames keep coming;
-    // the configured effect returns kTakeoverHold seconds after the last one.
+    // LedFx/DDP frames override the effect until they stop for kTakeoverHold seconds
     void takeoverFrame(const QColor &color);
     bool takenOver() const { return m_takenOver; }
     QColor current() const { return m_last; }
@@ -89,5 +86,5 @@ private:
     QColor m_takeover;
     double m_takeoverTime = -100;
     bool m_takenOver = false;
-    QTimer m_takeoverTimer; // paces takeover frames to the card's 30 fps
+    QTimer m_takeoverTimer; // caps takeover at 30 fps
 };

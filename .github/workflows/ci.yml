@@ -16,7 +16,7 @@ jobs:
       - name: Install dependencies
         run: pacman -Syu --noconfirm --needed git cmake ninja qt6-base qt6-declarative qt6-svg qt6-tools appstream desktop-file-utils shellcheck
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Configure
         run: cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_COMPILE_WARNING_AS_ERROR=ON

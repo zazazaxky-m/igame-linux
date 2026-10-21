@@ -2,7 +2,6 @@
 import QtQuick
 import QtQuick.Layouts
 
-// Small labelled metric: caption, big value + unit, optional hint.
 ColumnLayout {
     id: stat
     property string label

@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 
-// Shared bits of the igamed <-> client protocol: newline-delimited JSON over a Unix socket.
-// Requests carry "cmd" and an optional "id"; the daemon answers only requests that have an id.
-// Subscribed clients also receive {"event": "telemetry" | "led" | "config" | "notice", ...}.
+// igamed <-> client protocol: one JSON object per line over a unix socket.
+// requests have "cmd" and optionally "id" (only those get a reply), subscribers also get events
 
 #include <QByteArray>
 #include <QHash>
@@ -18,7 +17,7 @@
 namespace igame {
 
 #ifndef IGAME_VERSION
-#define IGAME_VERSION "1.0.0" // set by CMake from the project version
+#define IGAME_VERSION "1.0.0" // normally set by cmake
 #endif
 constexpr const char *kVersion = IGAME_VERSION;
 constexpr const char *kDefaultSocket = "/run/igame-linux/igamed.sock";
@@ -34,13 +33,13 @@ inline QByteArray encode(const QJsonObject &obj)
     return QJsonDocument(obj).toJson(QJsonDocument::Compact) + '\n';
 }
 
-// QJsonValue::toInt() rejects non-whole doubles (e.g. 149.99 from a slider); round instead.
+// QJsonValue::toInt() gives the fallback for 149.99 etc, so round
 inline int toInt(const QJsonValue &value, int fallback = 0)
 {
     return value.isDouble() ? int(std::lround(value.toDouble())) : fallback;
 }
 
-// Errors travel as "code|arg|arg" so clients can translate them; errorText() is the English text.
+// errors are "code|arg|arg" so clients can translate them
 inline QString operationText(const QString &op)
 {
     static const QHash<QString, QString> ops{

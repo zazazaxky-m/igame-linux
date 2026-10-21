@@ -8,8 +8,7 @@
 
 namespace {
 
-// DDP header: flags, sequence, data type, destination id, 32-bit offset, 16-bit length
-// (big endian), plus a 32-bit timecode when the TIME flag is set.
+// header: flags, seq, type, id, offset (u32 BE), length (u16 BE) [+ u32 timecode]
 constexpr int kHeader = 10;
 constexpr quint8 kVersionMask = 0xC0;
 constexpr quint8 kVersion1 = 0x40;
@@ -19,7 +18,7 @@ constexpr quint8 kReply = 0x04;
 constexpr quint8 kTime = 0x10;
 constexpr quint8 kIdDefault = 1;
 constexpr quint8 kIdAll = 255;
-constexpr int kMaxBytes = 4096 * 3; // more pixels than any strip we would average
+constexpr int kMaxBytes = 4096 * 3; // plenty
 
 quint32 be32(const uchar *p)
 {
@@ -84,7 +83,7 @@ void DdpReceiver::handle(const QByteArray &packet, const QString &source)
     const auto *p = reinterpret_cast<const uchar *>(packet.constData());
     const quint8 flags = p[0];
     if ((flags & kVersionMask) != kVersion1 || (flags & (kQuery | kReply)))
-        return; // other versions, status queries and replies are not pixel data
+        return; // not pixel data
     const quint8 type = p[2];
     const quint8 id = p[3];
     if (id != kIdDefault && id != kIdAll)
@@ -95,8 +94,7 @@ void DdpReceiver::handle(const QByteArray &packet, const QString &source)
     if (packet.size() < header + length || offset > quint32(kMaxBytes))
         return;
 
-    // Data type bits: C R TTT SSS. TTT 3 is RGBW; anything else is treated as 8-bit RGB
-    // (LedFx and WLED send type 1 or 0x0B).
+    // type bits C R TTT SSS; TTT=3 is RGBW, treat everything else as RGB8
     m_bytesPerPixel = ((type >> 3) & 0x07) == 3 ? 4 : 3;
     const int end = std::min(int(offset) + length, kMaxBytes);
     if (m_pixels.size() < end)
@@ -111,7 +109,7 @@ void DdpReceiver::handle(const QByteArray &packet, const QString &source)
         m_lastPush = now;
         emitFrame();
     } else if (now - m_lastPush > 1000) {
-        emitFrame(); // a sender that never pushes: show what we have
+        emitFrame(); // sender doesn't use PUSH
     }
 }
 

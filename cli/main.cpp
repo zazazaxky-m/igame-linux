@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// igame-ctl: command line client for igamed.
+// igame-ctl
 
 #include "protocol.h"
 
@@ -18,7 +18,6 @@ namespace {
 QTextStream out(stdout);
 QTextStream err(stderr);
 
-// Translation context for the messages below (English source, Indonesian in i18n/).
 struct Cli {
     Q_DECLARE_TR_FUNCTIONS(Cli)
 };
@@ -122,7 +121,6 @@ int status(Client &client)
     const QJsonObject cfg = r.value(QStringLiteral("config")).toObject();
     const auto n = [](const QJsonObject &o, const char *k) { return o.value(QLatin1String(k)).toVariant().toString(); };
 
-    // Labels are padded to line up the values, whatever their length after translation.
     const auto line = [](const QString &label, const QString &value) {
         out << label.leftJustified(11) << ": " << value << "\n";
     };
@@ -342,7 +340,7 @@ int profile(Client &client, const QStringList &args)
 int main(int argc, char **argv)
 {
     QCoreApplication app(argc, argv);
-    QTranslator translator; // Indonesian when the system language is Indonesian
+    QTranslator translator;
     if (translator.load(QLocale(), QStringLiteral("igame-ctl"), QStringLiteral("_"), QStringLiteral(":/i18n")))
         QCoreApplication::installTranslator(&translator);
 

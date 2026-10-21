@@ -29,8 +29,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(QStringLiteral(":/icons/app.svg")));
     app.setQuitOnLastWindowClosed(false);
 
-    // Single instance: a second launch brings the window forward, or with --toggle
-    // shows/hides it (handy for a global shortcut).
+    // single instance; --toggle is meant for a global shortcut
     const bool toggle = app.arguments().contains(QStringLiteral("--toggle"));
     const QString instanceKey = QStringLiteral("igame-control-%1").arg(getuid());
     {
@@ -52,7 +51,6 @@ int main(int argc, char *argv[])
     AudioCapture audio;
     AppHelper helper;
 
-    // Music mode follows the daemon config even while no window exists (tray mode).
     QObject::connect(&audio, &AudioCapture::frame, &daemon, &DaemonClient::sendFrame);
     const auto syncAudio = [&] {
         const QVariantMap rgb = daemon.config().value(QStringLiteral("rgb")).toMap();
@@ -61,7 +59,7 @@ int main(int argc, char *argv[])
         audio.setSpeed(rgb.value(QStringLiteral("speed"), 1.0).toDouble());
         audio.setSensitivity(rgb.value(QStringLiteral("sensitivity"), 100).toInt());
         audio.setMode(effect);
-        // While LedFx drives the light the daemon ignores our frames, so stop listening.
+        // no point capturing audio while LedFx has the light
         audio.setActive(daemon.isConnected() && effect.startsWith(QLatin1String("music")) && !daemon.ledfxActive());
     };
     QObject::connect(&daemon, &DaemonClient::configChanged, &audio, syncAudio);
@@ -93,8 +91,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonInstance("IGame", 1, 0, "Audio", &audio);
     qmlRegisterSingletonInstance("IGame", 1, 0, "App", &helper);
 
-    // The QML UI only exists while the window is open. Closing to the tray unloads it
-    // (engine, scene graph, GPU context), so the tray process stays small.
+    // QML only exists while the window is open
     std::unique_ptr<QQmlApplicationEngine> engine;
     const auto showUi = [&] {
         if (engine) {
@@ -110,14 +107,13 @@ int main(int argc, char *argv[])
                          [] { QCoreApplication::exit(1); }, Qt::QueuedConnection);
         engine->load(QUrl(QStringLiteral("qrc:/qml/Main.qml")));
     };
-    // Closing to the tray: Qt and the GPU driver keep most of the UI's memory even after it is
-    // destroyed, so hand over to a fresh tray-only process (~50 MB) and exit this one.
-    // Music mode resumes within a fraction of a second; the LED holds its color meanwhile.
+    // Qt/the GPU driver don't give the memory back after destroying the UI, so restart as a
+    // fresh tray-only process instead
     const auto unloadUi = [&] {
         if (!engine)
             return;
         QTimer::singleShot(0, &app, [&] {
-            engine.reset(); // destroys the window and saves the QML settings
+            engine.reset(); // also saves the QML settings
             instanceServer.close();
             if (QProcess::startDetached(QCoreApplication::applicationFilePath(), {QStringLiteral("--minimized")}))
                 QCoreApplication::quit();

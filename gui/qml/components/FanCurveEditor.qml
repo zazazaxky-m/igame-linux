@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import QtQuick
 
-// Interactive fan curve: drag points, double-click empty space to add, right/double-click a point to remove.
+// drag points, double-click to add, right-click to remove
 Item {
     id: ed
     property var points: []

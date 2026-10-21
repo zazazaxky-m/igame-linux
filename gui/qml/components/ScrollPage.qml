@@ -3,7 +3,6 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-// Scrollable page with a title header; children go into a column below the header.
 Item {
     id: page
     property string title

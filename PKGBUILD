@@ -1,6 +1,5 @@
 # Maintainer: zazazaxky-m
-# Builds a package from this checkout: run `makepkg -si` in the repository root.
-# For the AUR package that builds from GitHub, see packaging/aur/.
+# Builds from this checkout (makepkg -si). The AUR one is in packaging/aur/.
 pkgname=igame-linux
 pkgver=1.0.0
 pkgrel=1

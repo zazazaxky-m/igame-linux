@@ -6,11 +6,10 @@
 
 #include <optional>
 
-// RGB controller of Colorful iGame cards on the GPU's I2C bus (address 0x61).
-// Follows iGame Center 2.0.0.82 (iGameGCard.dll, NVCardDevice_LED3):
-//   DeviceCheck: handshake 0x0281, reply bytes 4..5 = model id (5 tries, 50 ms read delay)
-//   writeData:   single-zone cards (type 0x17) take 0x0312 frames: 01 FF R G B
-// Packet: AA EF <cmd lo> <cmd hi> <payload> <16-bit byte sum, little endian>.
+// Colorful iGame RGB controller, I2C 0x61 on the GPU bus.
+// packet: AA EF <cmd lo> <cmd hi> <payload> <sum16 LE>
+// 0x0281 handshake -> reply[4..5] = model id
+// 0x0312 color frame: 01 FF R G B (single zone, type 0x17)
 class RgbController
 {
 public:

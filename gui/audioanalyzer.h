@@ -11,18 +11,10 @@
 #include <deque>
 #include <vector>
 
-// Turns desktop audio into one LED color. Pure computation without an event loop, so it can be
-// replayed offline: feed() takes mono 48 kHz samples as they arrive, render() advances the
-// light by dt seconds and returns the color to show.
-//
-// Two analyses run side by side:
-// - every 512 samples (~94/s): loudness and bass/mid/treble meters, kick and onset detection,
-//   tempo and a beat tracker that locks onto the beat (it plays the part of LedFx's tempo
-//   detector, and Smart Sound uses it to recognise the style);
-// - every 800 samples (60/s): a LedFx-style melbank (24 mel bands from a 4096-point FFT,
-//   peak isolation, auto gain and LedFx's smoothing filters) that drives the LedFx effects:
-//   Energy, Scroll, Power, Magnitude, Wavelength, Bar, Strobe and Real Strobe, adapted to a
-//   single LED (roughly what a whole LedFx strip looks like from a distance).
+// Audio -> one LED color. No event loop, so tests can feed it recorded/synthetic audio.
+// Two analysis paths:
+//  - 1024 FFT every 512 samples: meters, kicks/onsets, tempo + beat grid, Smart Sound features
+//  - 4096 FFT every 800 samples (60/s): LedFx-style melbank that drives the LedFx effects
 class AudioAnalyzer
 {
 public:
@@ -49,7 +41,7 @@ public:
     bool locked() const { return m_locked; }
     const QString &style() const { return m_style; }
 
-    // Beat events since the last call, for tools and tests.
+    // for tests/tools
     struct BeatEvent { double time; double strength; bool real; };
     std::vector<BeatEvent> takeBeatEvents();
 
@@ -61,7 +53,7 @@ private:
     void estimateTempo();
     void classify(double dt);
     void melFrame();
-    double beatOscillator() const; // 0..1 through the current beat, or -1 without a tempo
+    double beatOscillator() const; // 0..1 within the beat, -1 = no tempo yet
     QColor draw(const QString &mode, const QVector<QColor> &palette) const;
     double audioTime() const;
 
@@ -75,10 +67,10 @@ private:
     std::vector<float> m_buffer;
     std::vector<float> m_window, m_windowed, m_mags;
     RealFft m_spectrum{1024};
-    std::vector<float> m_logMag[2]; // log magnitudes one and two hops back
+    std::vector<float> m_logMag[2]; // previous two hops
     qint64 m_hops = 0;
 
-    // loudness and bands (perceptual 0..1, smoothed at the analysis rate)
+    // loudness / bands, 0..1
     double m_ceilDb = -30, m_bandCeilDb[3] = {-40, -40, -40}, m_kickCeilDb = -40;
     double m_power = 0, m_loud = 0, m_loudSlow = 0, m_band[3] = {0, 0, 0};
     double m_silentSeconds = 0;
@@ -87,24 +79,24 @@ private:
     double m_kickDbHist[2] = {-120, -120};
     std::deque<float> m_kickRiseHist, m_fluxHist;
     double m_lastKick = -100, m_lastOnset = -100;
-    std::deque<double> m_onsetTimes; // for the onset rate (last 5 s)
-    std::deque<float> m_odf;          // onset strength for the tempo estimate (~6 s)
+    std::deque<double> m_onsetTimes; // last 5 s
+    std::deque<float> m_odf;          // ~6 s, for tempo
 
     // tempo and beat grid
     double m_bpm = 0, m_tempoConfidence = 0, m_pendingBpm = 0;
     int m_pendingVotes = 0;
     bool m_locked = false;
     double m_phaseHist[kPhaseSlots] = {};
-    double m_phase = 0;      // running beat phase (cycles)
-    double m_beatPhase = 0;  // where in the cycle the beat lands
-    double m_confirm = 0;    // 1 right after a kick on the grid, fades each beat
-    double m_histPeriod = 1; // beat period the histogram was built with
+    double m_phase = 0;      // in beats
+    double m_beatPhase = 0;
+    double m_confirm = 0;
+    double m_histPeriod = 1;
     double m_lastBeatTime = -100;
-    double m_pendingBeat = 0; // strongest beat since the last render
+    double m_pendingBeat = 0;
     std::vector<BeatEvent> m_events;
 
-    // LedFx-style melbank (60 frames/s)
-    std::vector<float> m_melRing; // the last 4096 samples
+    // melbank
+    std::vector<float> m_melRing;
     size_t m_melWrite = 0, m_melFilled = 0;
     int m_melSinceFrame = 0;
     std::vector<float> m_melWindow, m_melWindowed, m_melMag;
@@ -117,11 +109,11 @@ private:
     std::vector<MelFilter> m_melFilters;
     double m_melGain = 0.1;
     double m_mel[kMelBands] = {}, m_melCommon[kMelBands] = {}, m_melFiltered[kMelBands] = {};
-    double m_lowsRaw = 0, m_lows = 0, m_mids = 0, m_highs = 0; // LedFx band powers
-    bool m_melOnset = false, m_melKick = false; // since the last melbank frame
+    double m_lowsRaw = 0, m_lows = 0, m_mids = 0, m_highs = 0;
+    bool m_melOnset = false, m_melKick = false;
     double m_melTime = 0;
 
-    // LedFx effect state, advanced every melbank frame
+    // LedFx effect state
     double m_energy[3] = {}, m_scroll[3] = {};
     double m_powerBass = 0, m_powerOverlay = 0, m_powerOverlayPos = 0, m_sparks = 0;
     double m_barColor = 0, m_lastOsc = 0;

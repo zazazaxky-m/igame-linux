@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// The DDP receiver LedFx streams to, on a free local port.
 
 #include "ddpreceiver.h"
 
@@ -9,7 +8,6 @@
 
 namespace {
 
-// DDP packet: flags, sequence, data type, destination id, 32-bit offset, 16-bit length.
 QByteArray ddp(const QByteArray &data, quint32 offset = 0, bool push = true, quint8 type = 0x01, bool timecode = false,
                quint8 id = 1, quint8 extraFlags = 0)
 {
@@ -67,7 +65,7 @@ private slots:
 
     void framesAcrossPacketsAreAveraged()
     {
-        // 600 pixels: 300 red then 300 blue, split like LedFx does (480 pixels per packet).
+        // 300 red + 300 blue, split at 480 px like LedFx does
         const QByteArray pixels = QByteArray::fromHex("ff0000").repeated(300) + QByteArray::fromHex("0000ff").repeated(300);
         QSignalSpy spy(&m_receiver, &DdpReceiver::frame);
         send(ddp(pixels.left(1440), 0, false));

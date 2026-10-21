@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import QtQuick
 
-// Segmented control. options: [{ value, label, icon? }]
+// options: [{ value, label, icon? }]
 Rectangle {
     id: seg
     property var options: []

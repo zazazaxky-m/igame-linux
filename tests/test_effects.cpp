@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// Lighting settings validation and the effect engine (brightness, LedFx takeover).
 
 #include "effects.h"
 
@@ -109,12 +108,11 @@ private slots:
         QSignalSpy frames(&engine, &EffectEngine::frame);
         QSignalSpy takeover(&engine, &EffectEngine::takeoverChanged);
 
-        engine.takeoverFrame(QColor(0x12, 0x34, 0x56)); // shown as sent, no brightness scaling
+        engine.takeoverFrame(QColor(0x12, 0x34, 0x56)); // no brightness scaling
         QTRY_COMPARE(lastFrame(frames), QColor(0x12, 0x34, 0x56));
         QVERIFY(engine.takenOver());
         QCOMPARE(takeover.count(), 1);
 
-        // The configured effect returns once the frames stop.
         QTRY_VERIFY_WITH_TIMEOUT(!engine.takenOver(), int(EffectEngine::kTakeoverHold * 1000) + 1500);
         QTRY_COMPARE(lastFrame(frames), QColor(255, 255, 255));
     }

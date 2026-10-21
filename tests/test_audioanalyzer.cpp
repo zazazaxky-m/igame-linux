@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// The audio engine on synthetic music: tempo and beat lock, Smart Sound, and every effect.
 
 #include "audioanalyzer.h"
 
@@ -14,8 +13,7 @@ namespace {
 constexpr int kRate = AudioAnalyzer::kRate;
 constexpr double kPi = 3.14159265358979323846;
 
-// A simple groove: four-on-the-floor kick, snare on 2 and 4, off-beat hi-hats and bass notes,
-// and a soft pad. Deterministic, so the expectations below are stable.
+// kick on every beat, snare on 2/4, off-beat hats and bass, a pad. Fixed seed.
 std::vector<float> groove(double bpm, double seconds)
 {
     const size_t n = size_t(seconds * kRate);
@@ -73,7 +71,7 @@ std::vector<float> groove(double bpm, double seconds)
     return samples;
 }
 
-// Feeds audio the way the app does (20 ms chunks) and renders at 30 frames per second.
+// 20 ms chunks in, 30 fps out, like the app
 QVector<QColor> play(AudioAnalyzer &a, const std::vector<float> &samples)
 {
     QVector<QColor> frames;

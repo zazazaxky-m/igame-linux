@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import QtQuick
 
-// Smooth area chart for the last N telemetry samples (newest on the right).
+// area chart, newest sample on the right
 Canvas {
     id: chart
     property var values: []

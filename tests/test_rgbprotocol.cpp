@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-// The I2C packets sent to the card's lighting controller.
 
 #include "rgbcontroller.h"
 
@@ -12,13 +11,13 @@ class TestRgbProtocol : public QObject
 private slots:
     void handshake()
     {
-        // AA EF, command 0x0281 little endian, no payload, 16-bit sum 0x021C little endian.
+        // AA EF 81 02 + sum 0x021C
         QCOMPARE(RgbController::packet(0x0281), QByteArray::fromHex("aaef81021c02"));
     }
 
     void colorFrame()
     {
-        // Color frame 0x0312 with payload 01 FF R G B (pure red).
+        // red
         QCOMPARE(RgbController::packet(0x0312, QByteArray::fromHex("01ffff0000")),
                  QByteArray::fromHex("aaef120301ffff0000ad03"));
     }

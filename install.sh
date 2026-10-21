@@ -1,20 +1,18 @@
 #!/usr/bin/env bash
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
-# Builds and installs iGame Control from this source tree, then starts the igamed service.
+# Build + install iGame Control from this checkout and start igamed.
 #
-#   ./install.sh               install (asks for your password through sudo when needed)
-#   ./install.sh --uninstall   remove it again (your settings in /etc/igame-linux are kept)
+#   ./install.sh               install (uses sudo when needed)
+#   ./install.sh --uninstall   remove it (/etc/igame-linux is kept)
 #
-# On Arch Linux and derivatives this builds a real package (makepkg) so pacman manages it.
-# Elsewhere it builds with CMake and installs to /usr/local, keeping a list of the installed
-# files for --uninstall.
+# Arch: builds a pacman package with makepkg. Elsewhere: CMake install to /usr/local.
 #
 # Options:
 #   --prefix DIR   install prefix for the CMake path (default /usr/local)
 #   --cmake        use the CMake path even on Arch
-#   --no-deps      do not install build dependencies
-#   --no-service   do not enable/start igamed (for staging or testing)
+#   --no-deps      don't install build dependencies
+#   --no-service   don't enable/start igamed
 #   --uninstall    remove a previous install
 set -euo pipefail
 
@@ -33,7 +31,7 @@ while [ $# -gt 0 ]; do
     --no-deps) install_deps=0 ;;
     --no-service) service=0 ;;
     --uninstall) action=uninstall ;;
-    -h | --help) sed -n '3,19p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    -h | --help) awk 'NR > 2 && /^#/ { sub(/^# ?/, ""); print; next } NR > 2 { exit }' "$0"; exit 0 ;;
     *) echo "Unknown option: $1 (see --help)" >&2; exit 2 ;;
     esac
     shift
@@ -43,7 +41,7 @@ say() { printf '\033[1;36m==>\033[0m %s\n' "$*"; }
 warn() { printf '\033[1;33m==> warning:\033[0m %s\n' "$*" >&2; }
 die() { printf '\033[1;31m==> error:\033[0m %s\n' "$*" >&2; exit 1; }
 
-# Run as root only when needed: not at all for a prefix the user can write to.
+# only use sudo if we can't write to the prefix ourselves
 prefix_writable() {
     local dir="$prefix"
     while [ ! -e "$dir" ]; do dir="$(dirname "$dir")"; done
@@ -63,7 +61,7 @@ manifest="$prefix/share/igame-linux/install_manifest.txt"
 is_arch() { command -v pacman >/dev/null && command -v makepkg >/dev/null; }
 
 check_driver() {
-    # (no grep -q: with pipefail, grep quitting early would make the pipeline fail)
+    # no grep -q here, it breaks the pipe under pipefail
     if ! { ldconfig -p 2>/dev/null || /sbin/ldconfig -p 2>/dev/null || true; } | grep 'libnvidia-ml\.so\.1' >/dev/null; then
         warn "The NVIDIA driver (libnvidia-ml.so.1) was not found. Power, overclock, fans and"
         warn "monitoring need the proprietary NVIDIA driver; install it before using the app."
@@ -117,7 +115,7 @@ check_group() {
     warn "Add yourself (for example: sudo usermod -aG wheel $USER), then log out and in again."
 }
 
-# Let menus and icon themes notice the added or removed files.
+# refresh menu/icon caches
 refresh_caches() {
     if command -v update-desktop-database >/dev/null; then
         as_root update-desktop-database -q "$prefix/share/applications" || true
@@ -142,7 +140,7 @@ install_cmake() {
     cmake --build "$build" --parallel "$(nproc 2>/dev/null || echo 2)"
     say "Installing to $prefix"
     as_root cmake --install "$build"
-    # Keep the file list somewhere permanent so --uninstall works after the build is deleted.
+    # keep the file list for --uninstall
     as_root install -Dm644 "$build/install_manifest.txt" "$manifest"
     refresh_caches
 }
@@ -158,7 +156,7 @@ uninstall() {
         sudo systemctl disable --now igamed.service 2>/dev/null || true
     fi
     say "Removing the installed files"
-    # (|| [ -n ... ]: CMake writes the list without a final newline)
+    # cmake doesn't end the file with a newline
     while IFS= read -r file || [ -n "$file" ]; do
         [ -n "$file" ] && as_root rm -f "$file"
     done <"$manifest"

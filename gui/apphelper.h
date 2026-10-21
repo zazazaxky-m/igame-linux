@@ -7,7 +7,7 @@
 #include <QSystemTrayIcon>
 #include <QTranslator>
 
-// Desktop integration for QML: tray icon, autostart entry, clipboard and UI language.
+// tray, autostart, clipboard and language for the QML side
 class AppHelper : public QObject
 {
     Q_OBJECT
@@ -28,11 +28,10 @@ public:
     QString effectiveLanguage() const;
 
     Q_INVOKABLE void copyText(const QString &text);
-    // This computer's first non-loopback IPv4 address, for "send to" instructions.
+    // first non-loopback IPv4, shown in the LedFx setup hints
     Q_INVOKABLE QString lanAddress() const;
     Q_INVOKABLE void setTrayTooltip(const QString &text);
     Q_INVOKABLE void requestShow() { emit showRequested(); }
-    // Window closed to the tray: the UI is unloaded to free its memory until shown again.
     Q_INVOKABLE void closeToTray() { emit unloadRequested(); }
 
 signals:
@@ -50,7 +49,7 @@ private:
     QString m_language = QStringLiteral("system");
     QTranslator m_translator;
     bool m_translatorInstalled = false;
-    QMenu m_menu; // declared before m_tray: the tray must be destroyed first
+    QMenu m_menu; // must outlive m_tray
     QAction *m_openAction = nullptr;
     QAction *m_quitAction = nullptr;
     QSystemTrayIcon m_tray;

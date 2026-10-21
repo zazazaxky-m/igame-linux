@@ -2,7 +2,7 @@
 import QtQuick
 import QtQuick.Layouts
 
-// Label + live value + slider. Use setValue() to sync from outside without breaking the drag.
+// use setValue() for outside updates so a drag in progress isn't interrupted
 ColumnLayout {
     id: field
     property string label

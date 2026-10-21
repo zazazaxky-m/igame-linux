@@ -2,7 +2,7 @@
 import QtQuick
 import QtQuick.Shapes
 
-// Stroke icon drawn from a 24x24 SVG path in Theme.icons, tinted with any color.
+// 24x24 stroke icon from Theme.icons
 Item {
     id: root
     property string name

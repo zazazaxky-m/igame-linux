@@ -10,9 +10,8 @@
 #include <QTimer>
 #include <QVariantList>
 
-// Audio-reactive lighting. Reads the desktop audio monitor through parec (PipeWire/PulseAudio),
-// hands it to AudioAnalyzer and emits 30 colors/s for the selected mode. Runs in the user
-// session because the root daemon cannot reach the user's audio server.
+// Reads the desktop audio monitor via parec and emits 30 colors/s. Lives in the GUI because
+// the root daemon can't reach the user's pulse/pipewire session.
 class AudioCapture : public QObject
 {
     Q_OBJECT
@@ -53,7 +52,6 @@ public:
     qreal mid() const { return m_analyzer.band(1); }
     qreal treble() const { return m_analyzer.band(2); }
     int beatCount() const { return m_analyzer.beatCount(); }
-    // Shown only once the tempo is reasonably certain.
     int bpm() const { return m_analyzer.tempoConfidence() > 0.15 ? int(std::lround(m_analyzer.bpm())) : 0; }
     qreal tempoConfidence() const { return m_analyzer.tempoConfidence(); }
     bool locked() const { return m_analyzer.locked(); }
@@ -95,7 +93,7 @@ private:
     QByteArray m_pendingByte;
     std::vector<float> m_samples;
 
-    // last values reported to QML, to signal only real changes
+    // to only emit on real changes
     int m_lastBeatCount = 0;
     int m_lastBpm = -1;
     bool m_lastLocked = false;

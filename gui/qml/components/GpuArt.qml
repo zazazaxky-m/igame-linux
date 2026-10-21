@@ -3,8 +3,7 @@ import QtQuick
 import QtQuick.Shapes
 import QtQuick.Effects
 
-// Stylised white triple-fan iGame card. The light bar and ambient glow follow the real LED color,
-// the fans spin with the real fan RPM.
+// Drawing of the card. Light bar follows the LED color, fans follow the RPM.
 Item {
     id: art
     property color led: "#FFFFFF"
@@ -166,7 +165,7 @@ Item {
         }
     }
 
-    // RGB light bar along the top edge
+    // light bar
     Item {
         anchors.horizontalCenter: body.horizontalCenter
         anchors.verticalCenter: body.top

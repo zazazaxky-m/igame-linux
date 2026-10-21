@@ -6,7 +6,7 @@ Wants=systemd-modules-load.service
 
 [Service]
 Type=simple
-# The lighting controller is reached through i2c-dev; load it now rather than waiting for a reboot.
+# RGB needs i2c-dev, don't wait for a reboot
 ExecStartPre=-modprobe -q i2c-dev
 ExecStart=@CMAKE_INSTALL_FULL_BINDIR@/igamed
 Restart=on-failure

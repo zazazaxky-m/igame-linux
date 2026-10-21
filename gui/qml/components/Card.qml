@@ -2,7 +2,6 @@
 import QtQuick
 import QtQuick.Layouts
 
-// Rounded surface with an optional header (icon, title, subtitle, actions on the right).
 Rectangle {
     id: card
     property string title
@@ -21,7 +20,7 @@ Rectangle {
     implicitWidth: column.implicitWidth + padding * 2
     implicitHeight: column.implicitHeight + padding * 2
 
-    // faint top highlight for depth
+    // subtle top highlight
     Rectangle {
         anchors.fill: parent
         anchors.margins: 1

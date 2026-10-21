@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Controls
 import QtQuick.Layouts
 
-// HSV picker popup: saturation/value square, hue bar, hex field, swatches. Emits live edits.
+// HSV color picker popup
 Popup {
     id: pop
     property color color: "#FFFFFF"

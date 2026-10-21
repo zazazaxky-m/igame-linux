@@ -3,7 +3,7 @@ import QtQuick
 import QtQuick.Shapes
 import QtQuick.Effects
 
-// 270° radial gauge with a glowing value arc.
+// 270° gauge
 Item {
     id: g
     property real value: 0

@@ -167,7 +167,7 @@ void AudioCapture::tick()
     m_lastTick = now;
 
     emit frame(m_analyzer.render(dt));
-    m_analyzer.takeBeatEvents(); // only offline tools read these
+    m_analyzer.takeBeatEvents(); // not used here
 
     emit analysisChanged();
     if (m_analyzer.beatCount() != m_lastBeatCount) {

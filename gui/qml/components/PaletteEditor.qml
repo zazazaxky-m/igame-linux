@@ -2,7 +2,7 @@
 import QtQuick
 import QtQuick.Layouts
 
-// Row of color chips. Click a chip to edit it, x to remove, + to add (up to maxColors).
+// color chips: click to edit, x to remove, + to add
 Item {
     id: editor
     property var colors: []
@@ -11,8 +11,7 @@ Item {
     signal changed(var colors)
 
     property int editing: -1
-    // Chips shrink (down to 34 px) so a full 8-color gradient plus "+" stays on one row;
-    // if even that does not fit, the row wraps and the editor grows with it.
+    // shrink chips so 8 colors + "+" still fit on one row
     readonly property int slots: colors.length + (colors.length < maxColors ? 1 : 0)
     readonly property int chip: Math.max(34, Math.min(48, Math.floor((width - (slots - 1) * flow.spacing) / Math.max(1, slots))))
     implicitHeight: flow.implicitHeight

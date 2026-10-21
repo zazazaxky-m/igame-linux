@@ -56,7 +56,7 @@ QColor gradient(const QVector<QColor> &stops, double pos)
     return mix(stops[i], stops[i + 1], x - i);
 }
 
-// Smooth bump of the given width starting at `start` (all in cycle fractions).
+// smooth pulse inside [start, start + width) of the cycle
 double bump(double p, double start, double width)
 {
     if (p < start || p > start + width)
@@ -182,8 +182,7 @@ void EffectEngine::setSettings(const RgbSettings &settings)
 
 int EffectEngine::timerInterval() const
 {
-    // Still effects only need the keepalive, audio effects are paced by the frames the GUI sends
-    // and a takeover by its sender; then the timer just notices when those frames stop.
+    // static/audio/takeover don't need 30 fps ticks, only the keepalive and a timeout check
     const QString &e = m_settings.effect;
     const bool idle = e == QLatin1String("static") || e == QLatin1String("off") || e == QLatin1String("daytime")
                    || RgbSettings::isAudio(e) || m_takenOver;
@@ -194,8 +193,7 @@ void EffectEngine::externalFrame(const QColor &color)
 {
     m_external = color;
     m_externalTime = m_clock.elapsed() / 1000.0;
-    // Show each audio frame as it arrives. Resampling it on a second, unsynchronised 30 fps
-    // timer dropped and doubled frames, which made beat flashes uneven.
+    // pass audio frames straight through, resampling them on our timer made flashes uneven
     if (RgbSettings::isAudio(m_settings.effect) && !m_takenOver)
         tick();
 }
@@ -205,9 +203,8 @@ void EffectEngine::takeoverFrame(const QColor &color)
     m_takeover = color;
     m_takeoverTime = m_clock.elapsed() / 1000.0;
     if (m_takeoverTimer.isActive())
-        return; // the newest color goes out when the timer fires
-    // Show it now, or as soon as 1/30 s has passed since the last frame: senders often run at
-    // 60 fps and more, but every frame costs the NVIDIA driver ~2.4 ms of CPU.
+        return; // timer sends the latest one
+    // max 30 fps, each I2C write costs ~2.4 ms of CPU in the nvidia driver
     const double wait = m_lastSend + 1.0 / 30 - m_takeoverTime;
     if (wait <= 0)
         tick();
@@ -236,10 +233,9 @@ void EffectEngine::tick()
         m_timer.start(timerInterval());
         emit takeoverChanged(takenOver);
     }
-    // Takeover colors are shown as sent: LedFx has its own brightness control.
+    // LedFx handles brightness itself
     const QColor c = takenOver ? m_takeover : scale(compute(t, dt), m_settings.brightness / 100.0);
-    // Like iGame Center, keep refreshing even an unchanged color so the card recovers
-    // its lighting after suspend/resume or a controller reset.
+    // resend every 3s anyway so the card recovers after suspend (iGame Center does this too)
     if (c != m_last || m_forceSend || t - m_lastSend >= 3.0) {
         m_last = c;
         m_forceSend = false;
@@ -395,7 +391,7 @@ QColor EffectEngine::compute(double t, double dt)
         return mix(storm, bolt, flash);
     }
     if (e == QLatin1String("daytime")) {
-        // Color by local time of day: warm and dim at night, neutral white during the day.
+        // warm/dim at night, white during the day
         struct Key { double hour; QColor color; double level; };
         static const Key keys[] = {
             {0.0, QColor(0xFF, 0x7A, 0x1A), 0.22}, {5.5, QColor(0xFF, 0x7A, 0x1A), 0.22},

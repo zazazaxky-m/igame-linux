@@ -41,7 +41,7 @@ ApplicationWindow {
         function onToast(message, error) { toast.show(message, error) }
     }
 
-    // Ambient glow that follows the LED color ------------------------------------
+    // background glow in the LED color
     Shape {
         x: win.width - width * 0.62
         y: -height * 0.45

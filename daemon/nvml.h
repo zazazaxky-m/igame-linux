@@ -7,8 +7,7 @@
 
 #include <optional>
 
-// Thin dlopen() wrapper around libnvidia-ml.so.1; every call acts on one selected GPU.
-// This is the Linux counterpart of iGame Center's iGameAPI.NVAPI.dll.
+// Minimal NVML wrapper, dlopen'd so the driver isn't a build dependency.
 class Nvml
 {
 public:
@@ -25,7 +24,7 @@ public:
     bool ready() const { return m_device != nullptr; }
     QString lastError() const { return m_lastError; }
 
-    // Picks the GPU at the given sysfs PCI address ("0000:01:00.0"), else the first GPU.
+    // pci like "0000:01:00.0", empty = first GPU
     bool selectDevice(const QString &pciAddress = {});
 
     QString name();
@@ -61,7 +60,7 @@ public:
     std::optional<uint> fanPolicy(uint fan);
     bool fanRange(uint &min, uint &max);
 
-    // Changing settings needs root. Each returns the NVML status; lastError() has the text.
+    // setters need root
     int setPowerLimitW(double watts);
     int setClockOffset(ClockType type, int mhz);
     int setLockedClocks(uint minMhz, uint maxMhz);

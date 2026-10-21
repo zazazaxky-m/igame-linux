@@ -1,4 +1,4 @@
-# Matches the existing code. Format the lines you change (git clang-format), not whole files.
+# run git clang-format on your changes, not on whole files
 BasedOnStyle: WebKit
 Standard: c++20
 ColumnLimit: 120

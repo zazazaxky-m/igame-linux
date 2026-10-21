@@ -10,7 +10,7 @@ ScrollPage {
     subtitle: qsTr("Device details, service status and app preferences.")
 
     property var settings
-    // Hidden pages stop following the LED (no redraws for invisible items); they catch up as soon as they are shown.
+    // don't follow the LED while hidden, saves redraws
     readonly property color led: visible ? Daemon.ledColor : _frozenLed
     property color _frozenLed: "#000000"
     onVisibleChanged: if (!visible) _frozenLed = Daemon.ledColor

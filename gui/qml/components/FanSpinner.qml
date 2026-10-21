@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import QtQuick
 
-// Fan glyph that spins proportionally to the real RPM (stops at 0 RPM).
+// spins with the real RPM
 Item {
     id: f
     property real rpm: 0
