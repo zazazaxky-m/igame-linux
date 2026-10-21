@@ -35,4 +35,4 @@ jobs:
       - uses: softprops/action-gh-release@v3
         with:
           body_path: notes.md
-          files: "*.pkg.tar.zst"
+          files: "igame-linux-[0-9]*.pkg.tar.zst" # not the -debug package
