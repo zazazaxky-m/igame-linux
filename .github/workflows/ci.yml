@@ -39,3 +39,65 @@ jobs:
 
       - name: Check install.sh
         run: shellcheck install.sh
+
+  deb:
+    name: Debian package
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    steps:
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends build-essential cmake ninja-build dpkg-dev file git ca-certificates \
+            qt6-base-dev qt6-declarative-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libqt6svg6-dev
+
+      - uses: actions/checkout@v7
+
+      - name: Build and test
+        run: |
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+          cmake --build build
+          ctest --test-dir build --output-on-failure
+
+      - name: Package
+        run: |
+          cd build && cpack
+          dpkg-deb --info igame-linux_*.deb
+          dpkg-deb --contents igame-linux_*.deb
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: deb
+          path: build/igame-linux_*.deb
+
+  deb-install:
+    name: Install the .deb (${{ matrix.image }})
+    needs: deb
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        image: ["debian:trixie", "ubuntu:26.04"]
+    container: ${{ matrix.image }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: deb
+
+      - name: Install
+        run: |
+          apt-get update
+          apt-get install -y ./igame-linux_*.deb
+
+      - name: Smoke test
+        run: |
+          igame-ctl --version
+          igamed --help | head -n 3
+          # the window has to come up without missing QML modules; no service here, so it just waits
+          set +e
+          QT_QPA_PLATFORM=offscreen timeout 10 igame-control > app.log 2>&1
+          rc=$?
+          set -e
+          cat app.log
+          if grep -E "is not installed|failed to load component|QQmlApplicationEngine failed" app.log; then exit 1; fi
+          [ "$rc" -eq 124 ] || [ "$rc" -eq 0 ]

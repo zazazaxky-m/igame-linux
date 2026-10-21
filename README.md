@@ -126,6 +126,19 @@ sudo systemctl enable --now igamed
 pacman manages it from then on; install a newer release the same way. The install script below
 also works on Arch and builds the same package from source.
 
+### Debian 13 and Ubuntu 26.04
+
+Download `igame-linux_*_amd64.deb` from the [latest release](https://github.com/zazazaxky-m/igame-linux/releases/latest),
+then in the folder you saved it to:
+
+```bash
+sudo apt install ./igame-linux_*_amd64.deb
+```
+
+apt pulls in everything it needs and the service starts right away. You also need the NVIDIA
+driver: `sudo ubuntu-drivers install` on Ubuntu, the `nvidia-driver` package (non-free) on Debian.
+Ubuntu 24.04 and Debian 12 are not supported, their Qt is older than 6.5.
+
 ### Any distribution: the install script
 
 ```bash
@@ -139,8 +152,8 @@ starts the service. On Arch it builds a real package, so pacman manages it. To r
 ./install.sh --uninstall
 ```
 
-Only Arch Linux is tested so far. Debian and Ubuntu need Qt 6.5 or newer (Debian 13, Ubuntu
-25.04 or newer). Reports from other distributions are welcome.
+Arch, Debian 13 and Ubuntu 26.04 are tested; other distributions need Qt 6.5 or newer. Reports
+are welcome.
 
 ### Manually with CMake
 

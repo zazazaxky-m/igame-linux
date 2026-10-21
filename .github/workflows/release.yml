@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
-# push a v* tag -> build the Arch package and publish a release
+# push a v* tag -> build the Arch and Debian packages and publish a release
 name: Release
 
 on:
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  release:
+  arch:
     runs-on: ubuntu-latest
     container: archlinux:base-devel
     steps:
@@ -26,13 +26,54 @@ jobs:
           chown -R builder .
           su builder -c "makepkg -fd --noconfirm"
 
+      - uses: actions/upload-artifact@v7
+        with:
+          name: arch
+          path: igame-linux-[0-9]*.pkg.tar.zst # not the -debug package
+
+  deb:
+    runs-on: ubuntu-latest
+    container: debian:trixie
+    steps:
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y --no-install-recommends build-essential cmake ninja-build dpkg-dev file git ca-certificates \
+            qt6-base-dev qt6-declarative-dev qt6-tools-dev qt6-tools-dev-tools qt6-l10n-tools libqt6svg6-dev
+
+      - uses: actions/checkout@v7
+
+      - name: Build the package
+        run: |
+          cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr
+          cmake --build build
+          ctest --test-dir build --output-on-failure
+          cd build && cpack
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: deb
+          path: build/igame-linux_*.deb
+
+  publish:
+    needs: [arch, deb]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/download-artifact@v8
+        with:
+          path: packages
+          merge-multiple: true
+
       - name: Release notes from CHANGELOG.md
         run: |
           version="${GITHUB_REF_NAME#v}"
           awk -v v="$version" '/^## \[/{p = index($0, "[" v "]") > 0; next} /^\[[^]]+\]: /{p = 0} p' CHANGELOG.md > notes.md
           cat notes.md
+          ls -l packages
 
       - uses: softprops/action-gh-release@v3
         with:
           body_path: notes.md
-          files: "igame-linux-[0-9]*.pkg.tar.zst" # not the -debug package
+          files: packages/*

@@ -6,6 +6,10 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+### Added
+
+- `.deb` package for Debian 13 and Ubuntu 26.04 in every release, built and test-installed by CI.
+
 ## [1.0.0] - 2026-10-21
 
 First public release.

@@ -125,6 +125,19 @@ sudo systemctl enable --now igamed
 Setelah itu paketnya dikelola pacman; versi baru dipasang dengan cara yang sama. Skrip instalasi di
 bawah juga jalan di Arch dan membangun paket yang sama dari source.
 
+### Debian 13 dan Ubuntu 26.04
+
+Unduh `igame-linux_*_amd64.deb` dari [rilis terbaru](https://github.com/zazazaxky-m/igame-linux/releases/latest),
+lalu di folder tempat file itu disimpan:
+
+```bash
+sudo apt install ./igame-linux_*_amd64.deb
+```
+
+apt memasang semua yang dibutuhkan dan service langsung jalan. Driver NVIDIA juga perlu dipasang:
+`sudo ubuntu-drivers install` di Ubuntu, atau paket `nvidia-driver` (non-free) di Debian. Ubuntu
+24.04 dan Debian 12 belum didukung karena Qt-nya lebih lama dari 6.5.
+
 ### Distro apa pun: skrip instalasi
 
 ```bash
@@ -139,8 +152,8 @@ mencopot:
 ./install.sh --uninstall
 ```
 
-Sejauh ini baru dites di Arch Linux. Debian dan Ubuntu butuh Qt 6.5 atau lebih baru (Debian 13,
-Ubuntu 25.04 atau lebih baru). Laporan dari distro lain sangat diterima.
+Sudah dites di Arch, Debian 13, dan Ubuntu 26.04; distro lain butuh Qt 6.5 atau lebih baru.
+Laporan sangat diterima.
 
 ### Manual dengan CMake
 

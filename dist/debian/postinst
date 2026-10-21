@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+if [ "$1" = configure ] && [ -d /run/systemd/system ]; then
+    systemctl daemon-reload || true
+    if [ -z "$2" ]; then
+        systemctl enable --now igamed.service || true
+    else
+        systemctl try-restart igamed.service || true
+    fi
+fi

@@ -41,3 +41,6 @@ if(BUILD_TESTING)
 endif()
 
 install(FILES README.md README.id.md CHANGELOG.md LICENSE DESTINATION ${CMAKE_INSTALL_DOCDIR})
+
+# .deb package (cpack)
+include(cmake/DebPackage.cmake)

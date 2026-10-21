@@ -74,7 +74,7 @@ install_dependencies() {
         say "Installing build dependencies (pacman)"
         sudo pacman -S --needed --noconfirm base-devel cmake qt6-base qt6-declarative qt6-svg qt6-tools libpulse
     elif command -v apt-get >/dev/null; then
-        say "Installing build dependencies (apt); needs Qt 6.5 or newer (Debian 13, Ubuntu 25.04 or newer)"
+        say "Installing build dependencies (apt); needs Qt 6.5 or newer (Debian 13, Ubuntu 26.04 or newer)"
         sudo apt-get update
         sudo apt-get install -y build-essential cmake qt6-base-dev qt6-declarative-dev qt6-tools-dev \
             qt6-tools-dev-tools qt6-l10n-tools libqt6svg6-dev qml6-module-qtquick qml6-module-qtquick-controls \
