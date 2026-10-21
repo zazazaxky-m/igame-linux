@@ -17,7 +17,7 @@
 namespace igame {
 
 #ifndef IGAME_VERSION
-#define IGAME_VERSION "1.0.0" // normally set by cmake
+#define IGAME_VERSION "1.0.1" // normally set by cmake
 #endif
 constexpr const char *kVersion = IGAME_VERSION;
 constexpr const char *kDefaultSocket = "/run/igame-linux/igamed.sock";

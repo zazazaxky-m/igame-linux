@@ -6,9 +6,15 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-10-21
+
 ### Added
 
 - `.deb` package for Debian 13 and Ubuntu 26.04 in every release, built and test-installed by CI.
+
+### Changed
+
+- Releases only attach the installable packages (no `-debug` package).
 
 ## [1.0.0] - 2026-10-21
 
@@ -31,5 +37,6 @@ First public release.
 - Automated tests (Qt Test / CTest) for the lighting protocol, effect settings, fan curves, the
   DDP receiver and the audio engine.
 
-[Unreleased]: https://github.com/zazazaxky-m/igame-linux/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/zazazaxky-m/igame-linux/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/zazazaxky-m/igame-linux/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/zazazaxky-m/igame-linux/releases/tag/v1.0.0

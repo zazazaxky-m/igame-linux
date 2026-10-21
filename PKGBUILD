@@ -1,7 +1,7 @@
 # Maintainer: zazazaxky-m
 # Builds from this checkout (makepkg -si). The AUR one is in packaging/aur/.
 pkgname=igame-linux
-pkgver=1.0.0
+pkgver=1.0.1
 pkgrel=1
 pkgdesc="Unofficial lighting, overclocking and fan control for Colorful iGame GeForce cards (iGame Center replacement)"
 arch=('x86_64')

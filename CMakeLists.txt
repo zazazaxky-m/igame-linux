@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.21)
 
 project(igame-linux
-    VERSION 1.0.0
+    VERSION 1.0.1
     DESCRIPTION "Lighting, overclocking and fan control for Colorful iGame GeForce cards"
     HOMEPAGE_URL "https://github.com/zazazaxky-m/igame-linux"
     LANGUAGES CXX)
