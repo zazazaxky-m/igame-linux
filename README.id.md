@@ -111,18 +111,19 @@ Debian dan Ubuntu), dan biasanya user-mu sudah termasuk.
 
 ### Arch Linux dan turunannya
 
-Dari AUR, dengan AUR helper:
+Unduh `igame-linux-*.pkg.tar.zst` dari [rilis terbaru](https://github.com/zazazaxky-m/igame-linux/releases/latest),
+lalu di folder tempat file itu disimpan:
 
 ```bash
-yay -S igame-linux-git
+sudo pacman -U igame-linux-*.pkg.tar.zst
 ```
 
 ```bash
 sudo systemctl enable --now igamed
 ```
 
-Atau unduh `igame-linux-*.pkg.tar.zst` dari [rilis terbaru](https://github.com/zazazaxky-m/igame-linux/releases/latest),
-pasang dengan `sudo pacman -U igame-linux-*.pkg.tar.zst`, lalu aktifkan service dengan cara yang sama.
+Setelah itu paketnya dikelola pacman; versi baru dipasang dengan cara yang sama. Skrip instalasi di
+bawah juga jalan di Arch dan membangun paket yang sama dari source.
 
 ### Distro apa pun: skrip instalasi
 

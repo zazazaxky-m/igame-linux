@@ -112,18 +112,19 @@ the application menu. The app talks to the service as a member of the administra
 
 ### Arch Linux and derivatives
 
-From the AUR, with an AUR helper:
+Download `igame-linux-*.pkg.tar.zst` from the [latest release](https://github.com/zazazaxky-m/igame-linux/releases/latest),
+then in the folder you saved it to:
 
 ```bash
-yay -S igame-linux-git
+sudo pacman -U igame-linux-*.pkg.tar.zst
 ```
 
 ```bash
 sudo systemctl enable --now igamed
 ```
 
-Or download `igame-linux-*.pkg.tar.zst` from the [latest release](https://github.com/zazazaxky-m/igame-linux/releases/latest)
-and install it with `sudo pacman -U igame-linux-*.pkg.tar.zst`, then enable the service the same way.
+pacman manages it from then on; install a newer release the same way. The install script below
+also works on Arch and builds the same package from source.
 
 ### Any distribution: the install script
 
